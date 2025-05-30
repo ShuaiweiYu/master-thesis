@@ -27,7 +27,7 @@ The project is divided into distinct phases with specific objectives to ensure a
 // Milestones 1.a Implement a Kubernetes Operator for Hades.
 
 - *By the end of June – Logging Infrastructure and Integration*
-  - Implement a logging infrastructure leveraging FluentBit to provide observability for build processes and cluster activity.
+  - Implement a logging infrastructure to provide observability for build processes and cluster activity.
   - Integrate the Hades into Artemis to provide necessary logging outcomes.
 // Goals 1.e Add fluentbit logging infrastructure
 

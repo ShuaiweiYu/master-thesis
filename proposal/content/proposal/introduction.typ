@@ -11,11 +11,11 @@ Continuous Integration and Continuous Deployment (CI/CD) have become essential i
 
 Artemis is an interactive learning platform offering hands-on coding exercises. Artemis automatically assesses the exercise solution submitted by students and provides instant feedback so that the students could learn from their mistakes @kruscheArTEMiSAutomaticAssessment2018d. To support Artemis's CI pipelines, Jandow developed a job scheduling system, Hades, to handle build requests, manage build jobs, and deliver detailed build logs @jandowHadesCIScalableContinuous. When Hades receives a build request, it processes and validates the request using a Gateway component, which forwards the request to a Queue for scheduling afterwards. Kubernetes-based Build Agents then execute these build jobs and collect the results.
 
-Hades leverages Kubernetes as Build Agents due to its scalability, automated resource allocation, and self-recovery capabilities #footnote[https://kubernetes.io/]. However, Hades is currently deployed outside the Kubernetes clusters and interacts with the clusters using the Kubernetes API, kubectl #footnote[https://kubernetes.io/docs/reference/kubectl/]. This approach will limit Hades's capability due to API call latency, deployment complexity, and security risks.
+Hades leverages Kubernetes as Build Agents due to its scalability, automated resource allocation, and self-recovery capabilities #footnote[https://kubernetes.io/]. In its current architecture, Hades is deployed externally to the Kubernetes cluster and interacts with it through the Kubernetes API, kubectl #footnote[https://kubernetes.io/docs/reference/kubectl/]. This approach will limit Hades's capability due to API call latency, deployment complexity, and security risks.
 
 #figure(
   image("../../figures/HadesCI-Stripped-Logging-Components.png"),
   caption: [HadesCI Architecture],
 )
 
-This project aims to migrate the Hades executor into the Kubernetes cluster and implement a customized Kubernetes operator. The work also aims to optimize the Kubernetes-based executor and design a load balancer to follow Kubernetes's best practices and thus enhance efficiency. Moreover, a comprehensive Benchmarking framework will be designed to assess Hades's performance and scalability. Insights from the benchmark results will reveal possible areas of improvement.
+As container orchestration systems like Kubernetes become more relevant in CI/CD workflows, aligning CI systems with cloud-native practices has become an applicable direction for improvement. In this context, adapting Hades to run within a Kubernetes environment may lead to improvements in maintainability, deployment efficiency, and scalability, particularly for use cases such as programming exercise evaluation.

@@ -1,6 +1,6 @@
 // Enter your thesis data here:
-#let titleEnglish = "Extending and Benchmarking Hades for Kubernetes native build execution"
-#let titleGerman = "Erweiterung und Benchmarking von Hades für die native Build-Ausführung von Kubernetes"
+#let titleEnglish = "Extending and Benchmarking Hades for Kubernetes Native Build Execution"
+#let titleGerman = "Erweiterung und Benchmarking von Hades für die Native Build-Ausführung von Kubernetes"
 #let degree = "Master"
 #let program = "Information Systems"
 #let supervisor = "Prof. Dr. Stephan Krusche"

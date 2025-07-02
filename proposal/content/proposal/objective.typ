@@ -26,7 +26,12 @@ This project's second objective is to refine and optimize the Kubernetes-Based E
 
 Additionally, the current component of Hades supports no load-balancing strategies. Load balancing is vital for the system's concurrency capability. This project will align with the best practices in the industry to implement a load balancer to distribute the build jobs based on the cluster capacity to ensure concurrent job execution.
 
-== Implement a Benchmarking Suite for Performance Evaluation
+== Performance Evaluation via Benchmarking
 Another goal this project seeks to achieve is to design and implement a benchmarking framework to evaluate Hades's capacity under different scenarios. Since the CI process in an education setting varies considerably from different exercise scenarios, the developers need to understand Hades's performance and bottlenecks. The benchmarking suite will support the analysis of three key metrics: Latency, Infrastructure efficiency, and Throughput. 
 
-The Benchmarking Suite will be able to support submitting several jobs simultaneously to simulate the real-world concurrency behaviour. The Benchmarking Suite will collet data from build jobs, including enqueue time and execution time, and store this information into database. Metrics can be calculated on demand when the REST API endpoint is accessed. The suite is capable of calculating overall metrics or metrics for a specific time period, and it can also provide visualizations in the form of histograms. These metrics allow the developers and the system administrators to gain deeper insights into the behavior of Hades and identify possible improvements.
+The Benchmarking Suite will be able to support submitting several jobs simultaneously to simulate the real-world concurrency behaviour. The Benchmarking Suite will collet data from build jobs, including enqueue time and execution time, and store this information into database. Users can fetch metrics using REST API call. The suite is capable of calculating overall metrics or metrics for a specific time period, and it can also provide visualizations in the form of histograms. These metrics allow the developers and the system administrators to gain deeper insights into the behavior of Hades and identify possible improvements.
+
+#figure(
+  image("../../figures/HadesCI-Logging-Components.png"),
+  caption: [Integration of HadesCI with Learning Platform and Benchmarking Suite],
+)

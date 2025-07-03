@@ -18,4 +18,4 @@ Hades leverages Kubernetes as Build Agents due to its scalability, automated res
   caption: [HadesCI Architecture],
 )
 
-As container orchestration systems like Kubernetes become more relevant in CI/CD workflows, aligning CI systems with cloud-native practices has become an applicable direction for improvement. In this context, adapting Hades to run within a Kubernetes environment may lead to improvements in maintainability, deployment efficiency, and scalability, particularly for use cases such as programming exercise evaluation.
+Current trends in CI/CD increasingly leverage deploying build execution systems within Kubernetes clusters to benefit from cloud-native capabilities @mustyalaCICDPIPELINES. Adapting Hades more closely to Kubernetes may lead to improvements in maintainability, deployment efficiency, and scalability.

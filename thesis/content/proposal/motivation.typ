@@ -8,7 +8,7 @@
 //   - Optional: motivate with existing research, previous work 
 // ]
 
-Containerization and orchestration have recently become a best practice in software engineering @bernsteinContainersCloudLXC2014. Mustyala demonstrates scalable and efficient deployment of applications using CI/CD systems with Kubernetes @mustyalaCICDPIPELINES. Although Hades now uses Kubernetes to manage build jobs, Hades' scalability still suffers from the system not being deployed inside the cluster.
+Containerization and orchestration have recently become a best practice in software engineering @bernsteinContainersCloudLXC2014, where Mustyala demonstrates scalable and efficient deployment of applications using CI/CD systems with Kubernetes @mustyalaCICDPIPELINES. Although Hades now uses Kubernetes to manage build jobs, Hades' scalability still suffers from the system not being deployed inside the cluster.
 
 Improving Hades with a Kubernetes-native approach offers several benefits. Kubernetes's built-in auto-scaling and self-healing capabilities can enhance the robustness and security of the system. Moreover, adopting modern deployment practices with helm  #footnote[https://helm.sh/] can reduce human error and improve maintainability, which is beneficial in long-running scenarios where many users submit diverse build jobs, placing varying demands on the system. 
 

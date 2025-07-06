@@ -35,7 +35,7 @@ The project is divided into distinct phases with specific objectives to ensure a
 - *By the end of October – Deployment & Performance Benchmarking*
   - Deploy the Hades executor within a Kubernetes environment.
   - Perform a comprehensive benchmarking study to assess performance and identify areas for optimization.
-  - By now, the objective *4.3* is fullfilled
+  - By now, the objective *4.2* is fullfilled
 // Milestones 1.b Transition the Hades executor to run inside the Kubernetes cluster.
 // Milestones 1.c Integrate Service Accounts for secure API access.
 
@@ -43,7 +43,7 @@ The project is divided into distinct phases with specific objectives to ensure a
   - Optimize the build execution layer based on prior benchmark results.
   - Refine the Kubernetes executor utilizing native API resources.
   - Implement effective load-balancing strategies to enhance scalability and performance.
-  - By now, the objective *4.2* is fullfilled
+  - By now, the objective *4.3* is fullfilled
 // Milestones 3.a Improve the Kubernetes executor using native API objects (Pods, Jobs, etc.).
 // Milestones 3.b Implement and fine-tune concurrent job execution strategies.
 
@@ -52,5 +52,3 @@ The project is divided into distinct phases with specific objectives to ensure a
   - Resolve possible follow-up issues
 
 - *15.01.2026 – Final Delivery*
-
-

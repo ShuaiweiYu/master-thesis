@@ -51,6 +51,6 @@ The project is divided into distinct phases with specific objectives to ensure a
   - Implement feedback
   - Resolve possible follow-up issues
 
-- *15.12.2025 – Final Delivery*
+- *15.01.2026 – Final Delivery*
 
 

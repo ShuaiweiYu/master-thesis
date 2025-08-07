@@ -6,6 +6,6 @@ First, Hades is deployed manually and externally from the Kubernetes cluster. Th
 
 Second, the Kubernetes integration of Hades does not follow cloud-native best practices. It does not leverage native Kubernetes API objects and lacks a load-balancing mechanism. This will lead to imbalanced resource allocation, causing resource contention and impacting the user experience. 
 
-Third, Hades lacks the monitoring and logging support for the Kubernetes Operator. It is difficult to trace the system status without a robust monitoring and logging system. Moreover, build logs are not propagated to external trigger systems, making it hard for those systems to understand the outcome of submitted build jobs, especially in failure cases.
+Third, Hades lacks the monitoring and logging support for the Kubernetes Operator. It is difficult to trace the system status without a robust monitoring and logging system. Moreover, build logs are not propagated to external trigger systems, making it hard to understand the outcome of submitted build jobs, especially in failure cases.
 
-Fourth, Hades currently provides no benchmarking framework, which limits the ability to measure and analyze system performance. Without standardized benchmarks, it is difficult to evaluate Hades's behavior under varying workloads, which hinders optimization for high concurrency and makes bottlenecks harder to identify.
+Fourth, Hades currently provides no benchmarking framework, which limits the ability to measure and analyze system performance. Without standardized benchmarks, evaluating Hades's behavior under varying workloads is challenging, which hinders optimization for high concurrency and makes bottlenecks harder to identify.

@@ -3,7 +3,7 @@
 The current proof-of-concept implementation of Hades has demonstrated the feasibility of running build jobs using Kubernetes @jandowHadesCIScalableContinuous. This thesis builds on that foundation by migrating Hades into the Kubernetes cluster and improving its architecture according to cloud-native best practices. The goal is to enhance resource utilization, scalability, and system reliability. This work addresses three main objectives:
 + Implement a Kubernetes Operator for Hades
 + Evaluate Hades' Performance via Benchmarking
-+ Refine and Optimize the Kubernetes-Based Executor
++ Optimize the Kubernetes-Based Executor
 
 #figure(
   image("../../figures/HadesCI-Logging-Components.png"),
@@ -20,7 +20,7 @@ The second objective is to design, implement, and apply a benchmarking framework
 
 Beyond delivering the benchmarking tool, this work will apply it to test realistic workloads and concurrency levels. The results provide concrete insights into the behavior of the system, reveal potential bottlenecks, and establish a performance baseline for future optimizations. Additionally, the suite aggregates and visualizes performance data, facilitating intuitive analysis by developers and system administrators.
 
-== Refine and Optimize the Kubernetes-Based Executor
-This project's third objective is to refine and optimize the Kubernetes-Based Executor, which is responsible for managing the execution environment of build jobs @jandowHadesCIScalableContinuous. Although a proof-of-concept implementation exists, this project enhances the Executor by addressing performance bottlenecks based on insights from benchmarking results. Improvements include adopting Kubernetes-native API objects to optimize build job execution and enhance the overall efficiency of Hades.
+== Optimize the Kubernetes-Based Executor
+This project's third objective is to optimize the Kubernetes-Based Executor, which is responsible for managing the execution environment of build jobs @jandowHadesCIScalableContinuous. Although a proof-of-concept implementation exists, this project enhances the Executor by addressing performance bottlenecks based on insights from benchmarking results. Improvements include adopting Kubernetes-native API objects to optimize build job execution and enhance the overall efficiency of Hades.
 
 Additionally, the current Kubernetes Executor implementation supports no load-balancing strategies. This project will align with the best practices in the industry to implement a load balancer to distribute the build jobs based on the cluster capacity to ensure concurrent job execution. This work will also validate the effectiveness of the load balancing strategies through comparative measurements against the performance baseline.

@@ -1,0 +1,21 @@
+title Operator workflow
+
+Trigger -> Hades API: send build \njob request
+
+Hades API -> Queue: Validates build \njob request
+
+Queue -> Hades Scheduler: Retrieve build \njobs definition
+
+Hades Scheduler -> Hades Executor: Degelates the build
+
+Hades Executor -> Hades Operator: Create Build \nJob CRD
+
+Hades Operator -> Hades Operator: create BuildJob CR
+
+Hades Operator -> Hades Operator: create Pod
+
+Hades Operator -> Hades Operator: pull image
+
+Hades Operator -> Hades Operator: run build job
+
+Hades Operator -> Hades Operator: deletes CR and Pod

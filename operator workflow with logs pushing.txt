@@ -1,0 +1,28 @@
+title Operator workflow with logs
+
+CI-Benchmarker -> Hades API: send build \njob request
+
+Hades API -> Queue (NATS): Validates build \njob request
+
+Hades Scheduler -> Queue (NATS) : Retrieve build \njobs definition
+
+Hades Scheduler -> Hades Scheduler: Create Build \nJob CRD
+
+Hades Scheduler -> Hades Operator: Delegates the build
+
+Hades Operator -> Hades Operator: Create status consumer
+
+Hades Operator -> Hades Operator: Create BuildJob CR
+
+Hades Operator -> Hades Operator: Create Pod
+
+Hades Operator -> Hades Operator: Pull image
+
+Hades Operator -> Hades Operator: Run build job
+
+Hades Operator -> Hades Operator: Fetch logs in the K8S
+
+Hades Operator -> Queue (NATS): Publish Logs to Queue
+
+
+Hades Operator -> Hades Operator: Deletes CR and Pod

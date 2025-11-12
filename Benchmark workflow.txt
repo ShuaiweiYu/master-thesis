@@ -1,0 +1,23 @@
+title Benchmark workflow
+
+Router -> Controller: Validate and Schedule \n Benchmark requests
+
+Controller -> Executor: Generate UUID for each build job
+
+Controller -> Databse: Stores the UUID, metadata, start time
+
+Executor -> Hades API: send build job request
+
+Hades API -> Queue: Validates build job request
+
+Queue -> Hades Scheduler: Retrieve build jobs definition
+
+Hades Scheduler -> Hades Executor: Degelates the build
+
+Hades Executor -> Router: report build starting time
+
+Hades Executor -> Hades Executor: pull image
+
+Hades Executor -> Hades Executor: run build job
+
+Hades Executor -> Router: report build finish time

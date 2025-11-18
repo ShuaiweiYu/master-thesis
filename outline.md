@@ -17,7 +17,7 @@
 4. Outline
 
 # ~~Background~~
--[ ] Less necesaary, can talk little about this (low piority, can skip for now)
+- [ ] Less necesaary, can talk little about this (low piority, can skip for now)
 1. CI/CD Fundamentals
 2. Kubernetes Basics
 3. Helm Essentials

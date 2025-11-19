@@ -1,12 +1,7 @@
-#import "/utils/todo.typ": TODO
-
-
 = Motivation
-#TODO[ // Remove this block
-  *Proposal Motivation*
-  - Outline why it is (scientifically) important to solve the problem
-  - Again use the actors to present your solution, but don't be to specific
-  - Do not repeat the problem, instead focus on the positive aspects when the solution to the problem is available
-  - Be visionary! 
-  - Optional: motivate with existing research, previous work 
-]
+
+Addressing the limitations in the current Hades setup is essential to improve its scalability, reliability, and operational efficiency. Migrating Hades into the Kubernetes cluster and adopting cloud-native mechanisms enables the system to better handle high volumes of build jobs, recover from failures automatically, and reduce the maintenance burden on administrators @bernsteinContainersCloudLXC2014.
+
+Improving Hades with a Kubernetes-native approach offers several benefits. Kubernetes's built-in auto-scaling and self-healing capabilities can enhance the robustness and security of the system. Moreover, adopting modern deployment practices with Helm  #footnote[https://helm.sh/] can reduce human error and improve maintainability, which is beneficial in long-running scenarios where many users submit diverse build jobs, placing varying demands on the system. 
+
+Implementing a load-balancing mechanism will improve resource utilization and enable Hades to effectively handle concurrent build jobs, resulting in a more responsive and stable user experience even under high workloads. To objectively measure the improvements, introducing a benchmarking framework is essential. Benchmarking different Hades versions allows developers to understand the improvements and bottlenecks of each Hades version, which allows developers to understand the impact of code changes on the overall system.

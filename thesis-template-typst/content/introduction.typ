@@ -13,9 +13,9 @@ Current trends in CI/CD increasingly leverage deploying build execution systems 
 
 
 == Problem
-#TODO[
-  Describe the problem that you like to address in your thesis to show the importance of your work. Focus on the negative symptoms of the currently available solution.
-]
+// #TODO[
+//   Describe the problem that you like to address in your thesis to show the importance of your work. Focus on the negative symptoms of the currently available solution.
+// ]
 
 We identified four major problems in the current Hades setup that this work aims to address. The goal is to enhance Hades using native Kubernetes and improve its maintainability and observability.
 
@@ -28,9 +28,9 @@ Third, Hades lacks the monitoring and logging support for the Kubernetes Operato
 Fourth, Hades currently provides no benchmarking framework, which limits the ability to measure and analyze system performance. Without standardized benchmarks, evaluating Hades's behavior under varying workloads is challenging, which hinders optimization for high concurrency and makes bottlenecks harder to identify.
 
 == Motivation
-#TODO[
-  Motivate scientifically why solving this problem is necessary. What kind of benefits do we have by solving the problem?
-]
+// #TODO[
+//   Motivate scientifically why solving this problem is necessary. What kind of benefits do we have by solving the problem?
+// ]
 
 Addressing the limitations in the current Hades setup is essential to improve its scalability, reliability, and operational efficiency. Migrating Hades into the Kubernetes cluster and adopting cloud-native mechanisms enables the system to better handle high volumes of build jobs, recover from failures automatically, and reduce the maintenance burden on administrators @bernsteinContainersCloudLXC2014.
 
@@ -39,9 +39,9 @@ Improving Hades with a Kubernetes-native approach offers several benefits. Kuber
 Rather than implementing a separate load balancer, this thesis employ scheduler-driven workload distribution using Kubernetes primitives. This topology-aware placement improves cluster-wide utilization and reduces hot-spotting, enabling Hades to sustain higher concurrency while keeping user-perceived responsiveness stable. To objectively validate these improvements, we design a benchmarking framework that reports latency, throughput, and infrastructure efficiency, allowing developers to pinpoint bottlenecks and quantify the effect of code and configuration changes over time.
 
 == Objectives
-#TODO[
-  Describe the research goals and/or research questions and how you address them by summarizing what you want to achieve in your thesis, e.g. developing a system and then evaluating it.
-]
+// #TODO[
+//   Describe the research goals and/or research questions and how you address them by summarizing what you want to achieve in your thesis, e.g. developing a system and then evaluating it.
+// ]
 
 The current proof-of-concept implementation of Hades has demonstrated the feasibility of running build jobs using Kubernetes @jandowHadesCIScalableContinuous. This thesis builds on that foundation by migrating Hades into the Kubernetes cluster and improving its architecture according to cloud-native best practices. The goal is to enhance resource utilization, scalability, and system reliability. This work addresses three main objectives:
 + Implement a Kubernetes Operator for Hades
@@ -69,6 +69,6 @@ This project's third objective is to optimize the Kubernetes-Based Executor, whi
 Additionally, rather than introducing a separate load balancer, this project implements scheduler-driven workload distribution using Kubernetes primitives to balance placement and scale concurrent builds. We will benchmark these policies against a baseline to quantify improvements in latency, throughput, and efficiency.
 
 == Outline
-#TODO[
-  Describe the outline of your thesis
-]
+// #TODO[
+//   Describe the outline of your thesis
+// ]

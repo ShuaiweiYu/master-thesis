@@ -84,44 +84,44 @@ The system shall generate representative workloads, submit them at controlled ra
 
 // ]
 
-This section describes the quality attributes of the proposed system following the FURPS+ categorization recommended by @bruegge2004object . These attributes specify how the system should behave rather than what functionality it should provide. They define the expected levels of usability, reliability, performance, and supportability for the extended Hades architecture, including both the orchestration subsystem and the benchmarking subsystem. Attributes that could not be fully realized in the current work are also documented for completeness.
+This section describes the quality attributes of the proposed system following the FURPS+ categorization described in @bruegge2004object . These attributes specify how the system should behave rather than what functionality it should provide. They define the expected levels of usability, reliability, performance, and supportability for the extended Hades architecture, including both the orchestration subsystem and the benchmarking subsystem. Attributes that could not be fully realized in the current work are also documented for completeness.
 
-Usability
-QA1 Provide Accessible Operational Insights
+=== Usability
+- * QA1 Provide Accessible Operational Insights *
 
-The system shall present execution information—such as job status, lifecycle transitions, and benchmarking summaries—in a manner that is easy for developers and system administrators to interpret. The goal is to enable users to understand system behavior without requiring detailed knowledge of internal mechanisms.
+The system shall present execution-related information, such as job states and lifecycle transitions, which enables developers and system administrators to understand the behavior of the orchestration subsystem without requiring knowledge of its internal mechanisms. In parallel, the benchmarking subsystem shall expose performance measurements, including latency and throughput, in a structured and comprehensible manner that allows users to interpret benchmarking outcomes in a straightforward manner.
 
-Reliability
-QA2 Ensure Robust Lifecycle Management
+=== Reliability
+- * QA2 Ensure Robust Lifecycle Management *
 
 The system shall maintain the integrity of job lifecycle information even under high load or partial failures. This includes ensuring that job states are updated consistently and that failures in execution environments do not lead to inconsistent or undefined system states.
 
-QA3 Support Stable Execution Behavior
+- * QA3 Support Stable Execution Behavior *
 
-The system shall ensure that job orchestration and workload distribution behave deterministically under equivalent conditions, reducing variance in execution outcomes and increasing trust in system behavior during high-load scenarios.
+The system shall ensure that job orchestration and workload distribution remain stable and predictable, even under high load. This includes preserving consistent scheduling decisions across equivalent conditions and maintaining strict adherence to job priorities when selecting tasks for execution. The system thus provides reliable and trustworthy behavior during periods of intensive usage.
 
-Performance
-QA4 Maintain Scalable Job Throughput
+=== Performance
+
+- * QA4 Adaptive Auto-Scaling of Execution Resources (Not Realized) *
+
+The system should automatically adjust execution capacity based on current workload intensity and predicted demand, providing elasticity under fluctuating load. This capability was not implemented due to scope limitations but remains a desirable quality attribute for future development.
+
+- * QA5 Maintain Scalable Job Throughput *
 
 The system shall support the concurrent processing of multiple build jobs without significant degradation in response time or scheduling latency. The goal is to enable the system to function effectively during peak submission periods, such as practical examinations.
 
-QA5 Enable Accurate Performance Measurement
+- * QA6 Enable Accurate Performance Measurement *
 
 The benchmarking subsystem shall measure latency, throughput, and resource utilization with sufficient fidelity to support reliable performance comparisons across system configurations.
 
-Supportability
-QA6 Facilitate Configuration and Deployment Evolution
+=== Supportability
+- * QA7 Facilitate Configuration and Deployment Evolution *
 
 The system shall allow its components to be deployed, upgraded, and reconfigured with minimal manual intervention. This includes supporting structured deployment workflows and reducing the likelihood of configuration drift over time.
 
-QA7 Support Extensible Evaluation Scenarios
+- * QA8 Support Extensible Evaluation Scenarios *
 
 The benchmarking subsystem shall allow additional workload patterns or performance indicators to be incorporated with limited effort, enabling further experimentation beyond the scenarios implemented in this thesis.
-
-Unrealized Quality Attributes
-QA8 Adaptive Auto-Scaling of Execution Resources (Not Realized)
-
-The system should automatically adjust execution capacity based on current workload intensity and predicted demand, providing elasticity under fluctuating load. This capability was not implemented due to scope limitations but remains a desirable quality attribute for future development.
 
 === Constraints
 

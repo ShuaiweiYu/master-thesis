@@ -134,6 +134,26 @@ The benchmarking subsystem shall allow additional workload patterns or performan
 
 // ]
 
+C1 Implementation — Compatibility with Existing Hades Interfaces
+
+The system must remain compatible with the existing interfaces of HadesAPI and HadesScheduler. This constraint limits modifications to job specifications, request semantics, and communication patterns so that the new orchestration and benchmarking subsystems can be integrated without disrupting current clients and workflows.
+
+C2 Implementation — Use of a Unified Execution Environment
+
+The orchestration subsystem must operate within a standardized execution environment defined by the hosting infrastructure. This constraint restricts architectural choices and requires that the component conforms to existing runtime assumptions, such as available services, configuration mechanisms, and resource boundaries.
+
+C3 Interface — Integration with External Trigger Sources
+
+The system must continue to accept build requests from existing trigger sources, such as learning platforms and automated tools, without requiring changes to those external systems. This constraint preserves backward compatibility and limits the extent to which request formats and interaction patterns can be altered.
+
+C4 Operations — Centralized Deployment Management
+
+Deployment and configuration of the system components must follow the centralized operational practices of the hosting organization. This constraint requires that installation, updates, and configuration changes can be performed using the existing operational workflows, limiting the degree of customization during deployment.
+
+C5 Packaging — Structured Release Artifacts
+
+The system must be delivered in a packaging format that supports reproducible installation and upgrade procedures within the existing infrastructure. This constraint necessitates producing consistent release artifacts for the orchestration subsystem and the benchmarking subsystem, enabling predictable rollout and rollback.
+
 == System Models
 // #TODO[
 //   This section includes important system models for the requirements.

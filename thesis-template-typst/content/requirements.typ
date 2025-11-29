@@ -91,7 +91,7 @@ As a developer, I want to obtain structured benchmark reports so that I can inte
 
 // ]
 
-This section describes the quality attributes of the proposed system following the URPS categories outlined by Bruegge and Dutoit (@bruegge2004object). Unlike functional requirements, which specify what the system shall do, quality attributes specify how the system shall behave under a variety of conditions.
+This section describes the quality attributes of the proposed system following the URPS categories outlined by Bruegge and Dutoit @bruegge2004object. Unlike functional requirements, which specify what the system shall do, quality attributes specify how the system shall behave under a variety of conditions.
 
 Because the proposed system consists of two distinct subsystems—the Hades execution infrastructure and the CI-Benchmarker—the relevant quality attributes differ substantially. The following subsections therefore document the quality attributes separately for each subsystem.
 
@@ -182,7 +182,7 @@ Deployment and configuration of the system components must follow the centralize
 //   This section includes important system models for the requirements.
 // ]
 
-// === Scenarios
+=== Scenarios
 // #TODO[
 //   If you do not distinguish between visionary and demo scenarios, you can remove the two subsubsections below and list all scenarios here.
 
@@ -193,7 +193,7 @@ Deployment and configuration of the system components must follow the centralize
 //   Describe 1-2 demo scenario here, i.e. a scenario that you can implement and demonstrate until the end of your thesis. Use free text description.
 // ]
 
-// === Use Case Model
+=== Use Case Model
 // #TODO[
 //   This subsection shall contain a UML Use Case Diagram including roles and their use cases. You can use colors to indicate priorities. Think about splitting the diagram into multiple ones if you have more than 10 use cases. *Important:* Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex). Also describe the rationale of the use case model, i.e. why you modeled it like you show it in the diagram.
 

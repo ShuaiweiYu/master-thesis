@@ -10,6 +10,10 @@
 // #TODO[
 //   Provide a short overview about the purpose, scope, objectives and success criteria of the system that you like to develop.
 // ]
+ 
+The goal of the proposed system is to enhance the reliability, scalability, and evaluability of Hades, a continuous integration system designed to execute large volumes of automated CI build jobs @jandowHadesCIScalableContinuous. In this chapter, we provide a brief overview of the current Hades system, highlighting its limitations (Section 4.2), and then describe the purpose and scope of the proposed extensions (Section 4.3). We develop functional requirements (Section 4.3.1), quality attributes (Section 4.3.2), and constraints (Section 4.3.3) that define the expected behavior of the extended system. Finally, these requirements are further translated into system models (Section 4.4), ensuring a shared understanding of the application domain.
+
+The scope of this work develops as follows: this thesis introduces a more structured orchestration model for managing build-job execution, which provides more explicit lifecycle semantics, improved diagnostics, and reproducible deployment. Secondly, the thesis adds a benchmarking subsystem capable of generating controlled workloads, collecting end-to-end performance metrics, and producing comparative reports across different Hades configurations. Together, these enhancements aim to offer a maintainable deployment process, enable accurate and repeatable evaluation of latency and throughput, and support data-driven improvement of Hades's execution architecture.
 
 == Existing System
 // #TODO[
@@ -19,20 +23,21 @@
 
 The current Hades system comprises three main conceptual components: HadesAPI, the Queue, and HadesScheduler. Each component contributes to a distinct stage of the build-job processing workflow and follows the principles of a loosely coupled service system. Together, these components enable users and external systems to submit build requests, prioritize them, and dispatch them for execution @jandowHadesCIScalableContinuous.
 
-The HadesAPI acts as the request-intake component of the system. It accepts build requests from multiple trigger sources, such as learning platforms or automated benchmarking tools. Upon receiving a request, it validates the structure and completeness of the payload and assigns a priority level explicitly defined by the triggering party. The validated and prioritized request is then forwarded to the next subsystem for ordered processing.
+The HadesAPI serves as the request intake component of the system. It accepts build requests from multiple trigger sources, such as learning platforms or automated benchmarking tools. Upon receiving a request, it validates the structure and completeness of the payload and assigns a priority level explicitly defined by the triggering party. The validated and prioritized request is then forwarded to the next subsystem for ordered processing.
 
 The Queue is responsible for organizing and storing pending build jobs according to their assigned priority. It maintains multiple logical queues, each corresponding to a priority category, ensuring that high-priority jobs are always eligible for retrieval before lower-priority ones. The queueing subsystem provides persistence and ordering guarantees but does not maintain additional lifecycle state beyond job submission.
 
-The HadesScheduler retrieves jobs from these priority-ordered queues using a priority-descending selection strategy. Conceptually, it functions as a scheduling and delegation component rather than an execution engine. After selecting a job, HadesScheduler interprets its specification and delegates its execution to an appropriate external execution environment. Depending on the system configuration, this may involve initiating isolated build processes, preparing build steps, or coordinating multiple operations required to complete the job. The scheduler itself does not perform the build but orchestrates the required execution activities.
+The HadesScheduler retrieves jobs from these priority-ordered queues using a priority-descending selection strategy. Conceptually, it functions as a scheduling and delegation component rather than an execution engine. After selecting a job, HadesScheduler interprets its specification and delegates its execution to an appropriate external execution environment. Depending on the system configuration, this may involve initiating isolated build processes, preparing build steps, or coordinating multiple operations required to complete the job.
 
-While this architecture enables lightweight processing of build jobs, several limitations remain. The system does not maintain a unified lifecycle representation of build jobs, offers only limited observability into the execution process, lacks sophisticated workload-distribution strategies, and provides no standardized mechanism to evaluate performance. These limitations motivate the requirements and improvements described in the following sections.
+While this architecture enables lightweight processing of build jobs, several limitations remain. The system does not have a unified representation of build job lifecycles, provides limited visibility into the execution process, lacks advanced workload distribution strategies, and does not offer a standardized method for assessing performance. These limitations highlight the need for the improvements and requirements outlined in the following sections.
+
 
 == Proposed System
 // #TODO[
 //   If you leave out the section “Existing system”, you can rename this section into “Requirements”.
 // ]
  
-The proposed system introduces new capabilities aimed at improving the management, execution, and evaluation of build jobs within Hades. This section summarizes the functional requirements derived from the system objectives and the limitations identified in the existing architecture. The requirements are grouped into two categories: core system capabilities, which describe the essential functions needed to manage and operate build jobs in a structured and scalable manner; and benchmarking capabilities, which outline the system’s ability to generate workloads, measure performance, and support comparative evaluation across different configurations. These functional requirements collectively define the scope of the proposed enhancements and guide the system’s architectural design.
+The proposed system introduces new capabilities aimed at improving the management, execution, and evaluation of build jobs within Hades. This section summarizes the functional requirements derived from the system objectives and the limitations identified in the existing architecture. The requirements are grouped into two categories: core system capabilities, which describe the essential functions needed to manage and operate build jobs in a structured and scalable manner; and benchmarking capabilities, which outline the system's ability to generate workloads, measure performance, and support comparative evaluation across different configurations. These functional requirements collectively define the scope of the proposed enhancements and guide the system's architectural design.
 
 
 === Functional Requirements
@@ -50,11 +55,12 @@ For Hades, the primary external actors are:
 
 - * System Administrator * — responsible for deploying, configuring, and maintaining the Hades system. This actor interacts with the system during installation, upgrades, configuration changes, and version management.
 
-- * Developer * — responsible for implementmenting new requiremnts and functionalities into hades and evaluating the permance changes Hades through the CI-Benchmarker.
+- * Developer * — responsible for implementing new requirements and functionalities into Hades and evaluating the performance changes in Hades through the CI-Benchmarker.
 
-Unlike many user-facing systems, Hades is not directly used by end-users such as students or instructors; instead, it operates as an internal infrastructure component whose functionality is primarily accessed by external systems or by developers performing evaluation tasks. As a result, the functional requirements focus on the capabilities enabling systematic deployment, controlled execution of benchmark workloads, and performance assessment.
+Unlike many user-facing systems, Hades is not directly used by end-users such as students or instructors; instead, it operates as an internal infrastructure component whose functionality is primarily accessed by external systems or by developers performing evaluation tasks. As a result, the functional requirements focus on the capabilities that enable the systematic deployment, controlled execution of benchmark workloads, and performance assessment.
 
 To reflect the different responsibilities and objectives of each actor, the functional requirements are organized into two categories:
+
 - * Core System Capabilities * — requirements addressing how system administrators interact with Hades to deploy and manage it in a consistent and reproducible manner.
 
 - * Benchmarking Capabilities * — requirements addressing how developers use the CI-Benchmarker to generate workload scenarios, measure system performance, and analyze execution outcomes across different configurations.
@@ -65,21 +71,21 @@ Together, these requirements define the externally observable behavior of the ex
 
 - * FR1 Manage Packaged Deployment of the Hades System *
 
-As a system administrator, I would like to deploy, configure, upgrade, and roll back the Hades system using a structured, package-based deployment mechanism so that the system can be installed and maintained consistently across different environments. The deployment process shall support versioned updates and minimize manual configuration effort, enabling administrators to efficiently manage different Hades versions and system configurations.
+As a system administrator, I would like to deploy, configure, upgrade, and roll back the Hades system using a structured, package-based deployment mechanism, ensuring the system can be installed and maintained consistently across different environments. The deployment process shall support versioned updates and minimize manual configuration effort, enabling administrators to efficiently manage different Hades versions and system configurations.
 
 ==== Benchmarking Capabilities
 
 - * FR2 Generate Configurable Benchmark Workloads *
 
-As a developer, I want to generate configurable benchmark workloads so that I can simulate different usage scenarios of Hades and evaluate how the system behaves under varying conditions. The CI-Benchmarker shall enable the creation of workloads that vary in the number of build jobs, submission rate, priority distribution, and composition of build steps. These parameters allow developers and system administrators to reproduce realistic situations, such as exam-time submission peaks or continuous background usage, and to study system performance across a range of operational conditions.
+As a developer, I want to generate configurable benchmark workloads so that I can simulate different usage scenarios of Hades and evaluate how the system behaves under varying conditions. The CI-Benchmarker shall enable the creation of workloads that vary in the number of build jobs, submission rate, priority distribution, and composition of build steps. These parameters enable developers and system administrators to reproduce realistic scenarios, such as exam-time submission peaks or continuous background usage, and to analyze system performance across a range of operational conditions.
 
 - * FR3 Collect End-to-End Performance Metrics *
 
-As a developer, I want to collect end-to-end performance metrics for submitted build jobs so that I can analyze how different system configurations affect latency, throughput, and overall execution behavior. To support this goal, the CI-Benchmarker shall measure key indicators such as the time from submission to completion, waiting time before execution, and the number of jobs processed over a given interval. In addition, it shall allow identical workloads to be executed against different Hades configurations or execution modes, and record their performance results in a comparable form. These capabilities enable systematic comparison between alternative architectural designs, tuning strategies, or operator versions, providing a data-driven foundation for performance evaluation and optimization.
+As a developer, I want to collect end-to-end performance metrics for submitted build jobs so that I can analyze how different system configurations affect latency, throughput, and overall execution behavior. To support this goal, the CI-Benchmarker shall measure key indicators, including the time from submission to completion, waiting time before execution, and the number of jobs processed over a specified interval. Additionally, it shall enable identical workloads to be executed against different Hades configurations or execution modes, and record their performance results comparably. These capabilities enable systematic comparison between alternative architectural designs, tuning strategies, or operator versions, providing a data-driven foundation for performance evaluation and optimization.
 
 - * FR4 Produce Benchmark Reports for Analysis *
 
-As a developer, I want to obtain structured benchmark reports so that I can interpret performance results efficiently and identify potential bottlenecks in the system. To support this goal, the CI-Benchmarker shall aggregate the collected performance data and generate reports that summarize key metrics, such as latency distributions, throughput over time, and comparative outcomes across different system configurations. These reports shall be suitable for manual inspection by developers and system administrators and provide actionable insights that guide further optimization and architectural evaluation.
+As a developer, I want to obtain structured benchmark reports so that I can interpret performance results efficiently and identify potential bottlenecks in the system. To support this goal, the CI-Benchmarker shall aggregate the collected performance data and generate reports that summarize key metrics, such as latency distributions, throughput over time, and comparative outcomes across different system configurations. These reports should be suitable for manual inspection by developers and system administrators, providing actionable insights that guide further optimization and architectural evaluation.
 
 === Quality Attributes
 // #TODO[
@@ -91,7 +97,7 @@ As a developer, I want to obtain structured benchmark reports so that I can inte
 
 // ]
 
-This section describes the quality attributes of the proposed system following the URPS categories outlined by Bruegge and Dutoit @bruegge2004object. Unlike functional requirements, which specify what the system shall do, quality attributes specify how the system shall behave under a variety of conditions.
+This section describes the quality attributes of the proposed system following the URPS categories outlined by Bruegge and Dutoit @bruegge2004object. Unlike functional requirements, which specify what the system must do, quality attributes specify how the system should behave under various conditions.
 
 Because the proposed system consists of two distinct subsystems—the Hades execution infrastructure and the CI-Benchmarker—the relevant quality attributes differ substantially. The following subsections therefore document the quality attributes separately for each subsystem.
 
@@ -132,7 +138,7 @@ The system shall provide clear and accessible visibility into the execution resu
 ==== Quality Attributes for the CI-Benchmarker
 - * QA9 Usability: Developer-Friendly Benchmarking Interface *
 
-The benchmarking subsystem shall be easy for developers and system administrators to learn and operate. It shall expose a simple and well-documented interface that allows benchmark runs to be triggered using familiar tools such as HTTP clients or command-line utilities. Developers shall be able to initiate benchmarking activities without requiring detailed knowledge of Hades’s internal execution architecture.
+The benchmarking subsystem shall be easy for developers and system administrators to learn and operate. It shall expose a simple and well-documented interface that allows benchmark runs to be triggered using familiar tools such as HTTP clients or command-line utilities. Developers shall be able to initiate benchmarking activities without requiring detailed knowledge of Hades's internal execution architecture.
 
 - * QA10 Usability: Easily Configurable Benchmark Scenarios *
 
@@ -182,6 +188,8 @@ Deployment and configuration of the system components must follow the centralize
 //   This section includes important system models for the requirements.
 // ]
 
+System models provide complementary views of the proposed system and help translate the previously defined textual requirements into visual representations, making the proposed solution more precise and understandable @bruegge2004object. In this chapter, we present four types of models. Scenarios describe concrete workflows in realistic situations, ensuring the expected behavior of the system. The use case model abstracts the system's usage and captures the key user interactions. The analysis object model identifies the essential domain concepts and structures them in relation to their relationships. The dynamic model then captures the collaborations of the system components, focusing on state transitions during the system's lifecycle. The following sections provide a detailed description of each model.
+
 === Scenarios
 // #TODO[
 //   If you do not distinguish between visionary and demo scenarios, you can remove the two subsubsections below and list all scenarios here.
@@ -193,11 +201,45 @@ Deployment and configuration of the system components must follow the centralize
 //   Describe 1-2 demo scenario here, i.e. a scenario that you can implement and demonstrate until the end of your thesis. Use free text description.
 // ]
 
+Bob completes a programming exercise on the online learning platform and clicks Submit. The platform packages his solution and sends a build request to Hades. Hades registers the job, assigns it a lifecycle state, and places it into the priority queue. When resources are available, the scheduler selects Bob's job and triggers its execution in an isolated environment. During the process, Hades records lifecycle transitions, captures logs, and measures execution time. Once the job finishes, Hades returns the result and logs to the platform. Bob immediately sees whether his solution compiled, which tests passed, and any error messages. This scenario demonstrates how Hades processes external build requests reliably while providing clear feedback and observable execution behavior.
+
 === Use Case Model
 // #TODO[
 //   This subsection shall contain a UML Use Case Diagram including roles and their use cases. You can use colors to indicate priorities. Think about splitting the diagram into multiple ones if you have more than 10 use cases. *Important:* Make sure to describe the most important use cases using the use case table template (./tex/use-case-table.tex). Also describe the rationale of the use case model, i.e. why you modeled it like you show it in the diagram.
 
 // ]
+
+Use cases describe the functional behavior of a system as perceived by external entities, capturing the interactions that lead to a meaningful and observable result. Actors are those external entities interacting with the system to achieve a specific objective. The relationship between actors and use cases defines the system boundary: actors initiate or participate in use cases, while use cases represent the services the system provides in response @bruegge2004object. Based on this perspective, we identify the relevant actors for the Hades system and the CI-Benchmarker as follows: 
+
+- * External Trigger * : represents systems such as online learning platforms, CI-Benchmarker, or CLI in terminal that initiate build jobs. Hades interacts only with these systems, not with end users directly.
+- * System Administrator * : manages deployment, configuration, and monitoring of Hades, reflecting the operational nature of this subsystem.
+- * Developer * : serves as the sole actor for the CI-Benchmarker, which is used exclusively for performance experiments and not by external platforms.
+
+It is important to note that Hades and the CI-Benchmarker operate as two distinct subsystems with different responsibilities. As a result, their actors do not overlap: Hades primarily interacts with external triggering systems and administrators responsible for its operation, whereas the CI-Benchmarker is exclusively used by developers and researchers conducting performance evaluations.
+
+The figure @usecase_1 illustrates the interactions between two primary actors and the Hades system: the External Trigger and the System Administrator. The interests of the two roles differ fundamentally, the External Trigger prioritizes the functional utilization of the platform, whereas the System Administrator focuses on the system's maintainability and deployment lifecycle.
+
+#figure(
+  image("../figures/usecase_1.png"),
+  caption: [A UML use case diagram illustrating the interaction of an external trigger and a system administrator with the Hades System ],
+) <usecase_1>
+
+The External Trigger initiates the workflow through the Submit Build Job use case. In this use case, the External Trigger will transmit build configurations to the Hades system, initiating the continuous integration pipeline. Once the pipeline is active, the interaction centers on the View Build Status use case. We model the View Build Status use case via an include relationship to Live Streaming Build Logs, signifying that the retrieval of real-time logs is an obligatory and integral part of the status viewing process. These mechanisms ensure that the actor receives immediate feedback on the execution progress. We model the View Error Logs use case using an extended relationship. This extension indicates that accessing error logs is a conditional behavior, triggered explicitly when a build fails or an exception occurs. The separation between use cases ensures that the main workflow is focused on standard monitoring, while detailed diagnostic capabilities remain accessible as an optional extension for fault localization and diagnosis.
+
+Parallel to the execution flow, the System Administrator's primary interest lies in the operational maintenance of the platform. The System Administrator interacts primarily with the Manage Hades Deployment Lifecycle use case, which serves as a high-level abstraction for system orchestration. To define the specific scope of administrative duties, this use case includes two distinct sub-routines. Deploy Hades use case handles the initial provisioning and configuration of the system environment. The Upgrade/Rollback Hades use case provides a mechanism for version control, allowing administrators to apply updates or revert to a previous stable state.
+
+Complementing the primary execution use cases, the CI-Benchmarker subsystem operates as an independent module designed for performance evaluation and benchmarking. Figure @usecase_2 illustrates the use case model for this subsystem, focusing on the interactions between the Developer and the CI-Benchmarker.
+
+#figure(
+  image("../figures/usecase_2.png"),
+  caption: [A UML use case diagram illustrating the interaction of a Developer with the CI-Benchmarker ],
+) <usecase_2>
+
+The workflow initiates through the Trigger Benchmark Execution use case. This use case serves as the primary entry point for starting performance tests. We model this interaction via an include relationship to Configure Benchmark Parameters. Developers can configure several variables, such as job batches, commit hash, or executor mode. These configurations are a necessary prerequisite for execution, allowing the Developer to choose from different benchmarking scenarios and study the performance changes, and also guaranteeing the reproducibility of the results.
+
+Following the execution phase, the system supports the Collect Performance Metrics use case. It allows the Developer to retrieve performance data regarding system throughput, latency, and resource utilization, forming the quantitative basis for evaluating the Hades system's performance.
+
+Together, the use cases presented above provide a comprehensive view of the interactions that define both subsystems of the platform: Hades as a build-execution service and the CI-Benchmarker as a performance evaluation module. These diagrams and descriptions clarify the responsibilities of each actor, highlight the mandatory and optional behaviors, and outline the complete interaction flows underlying build execution and benchmarking workflows. Having established these functional boundaries and actor-driven perspectives, we now turn to the structural foundations of the system. 
 
 === Analysis Object Model
 // #TODO[

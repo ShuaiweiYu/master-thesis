@@ -35,6 +35,42 @@
   Optional section describing the access control and security issues based on the quality attributes and constraints. It also de- scribes the implementation of the access matrix based on capabilities or access control lists, the selection of authentication mechanisms and the use of en- cryption algorithms.
 ]
 
+#table(
+  columns: (auto, auto, auto, auto, auto, auto, auto, auto, auto),
+  inset: 6pt,
+  align: center + horizon,
+  table.header(
+    [*Subject*], [*ConfigMaps*], [*Secrets*], [*Pods*], [*Logs*], [*Events*], [*Batch Jobs*], [*BuildJobs*], [*Leases*],
+  ),
+  
+  // Row 1: Hades Operator
+  [Hades \ Operator],
+  [R, W, D], // ConfigMaps
+  [R, W, D], // Secrets
+  [R, W, D], // Pods
+  [R],       // Logs (Read only)
+  [W],       // Events (Write only)
+  [R, W, D], // Jobs
+  [R, W, D], // BuildJobs
+  [R, W],    // Leases (No Delete)
+
+  // Row 2: Hades Scheduler
+  [Hades \ Scheduler],
+  [R, C, D], // CM: No Update
+  [-],       // Secrets: None
+  [R, C, D], // Pods: No Update
+  [-],       // Logs: None
+  [-],       // Events: None
+  [R, C, D], // Jobs: No Update
+  [R, W, D], // BuildJobs: Full
+  [-],       // Leases: None
+)
+
+#v(0.5em)
+#text(size: 0.8em, style: "italic")[
+  Legend: R = Read, W = Write (Update/Patch), C = Create (No Update), D = Delete.
+]
+
 == Global Software Control
 #TODO[
   Optional section describing the control flow of the system, in particular, whether a monolithic, event-driven control flow or concurrent processes have been selected, how requests are initiated and specific synchronization issues

@@ -50,7 +50,7 @@
         </mxCell>
         <mxCell id="cqjRmpCU5IkpfOepQ1Kg-16" value="&amp;lt;&amp;lt;extends&amp;gt;&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;" parent="cqjRmpCU5IkpfOepQ1Kg-9" vertex="1" connectable="0">
           <mxGeometry x="-0.2186" y="2" relative="1" as="geometry">
-            <mxPoint y="13" as="offset" />
+            <mxPoint x="4" y="13" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="cqjRmpCU5IkpfOepQ1Kg-8" value="View Error Logs" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">

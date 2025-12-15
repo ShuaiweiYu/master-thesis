@@ -11,11 +11,11 @@
 //   Provide a short overview about the purpose, scope, objectives and success criteria of the system that you like to develop.
 // ]
  
-The goal of the proposed system is to enhance the reliability, scalability, and evaluability of Hades, a continuous integration system designed to execute large volumes of automated CI build jobs @jandowHadesCIScalableContinuous. In this chapter, we provide a brief overview of the current Hades system, highlighting its limitations (Section 4.2), and then describe the purpose and scope of the proposed extensions (Section 4.3). We develop functional requirements (Section 4.3.1), quality attributes (Section 4.3.2), and constraints (Section 4.3.3) that define the expected behavior of the extended system. Finally, these requirements are further translated into system models (Section 4.4), ensuring a shared understanding of the application domain.
+The goal of the proposed system is to enhance the reliability, scalability, and evaluability of Hades, a continuous integration system designed to execute large volumes of automated CI build jobs @jandowHadesCIScalableContinuous. In this chapter, we provide a brief overview of the current Hades system, highlighting its limitations (@existing_system), and then describe the purpose and scope of the proposed extensions (@proposed_system). We develop functional requirements (@functional_requirements), quality attributes (@quality_attributes), and constraints (@constraints) that define the expected behavior of the extended system. Finally, these requirements are further translated into system models (@system_models), ensuring a shared understanding of the application domain.
 
 The scope of this work develops as follows: this thesis introduces a more structured orchestration model for managing build-job execution, which provides more explicit lifecycle semantics, improved diagnostics, and reproducible deployment. Secondly, the thesis adds a benchmarking subsystem capable of generating controlled workloads, collecting end-to-end performance metrics, and producing comparative reports across different Hades configurations. Together, these enhancements aim to offer a maintainable deployment process, enable accurate and repeatable evaluation of latency and throughput, and support data-driven improvement of Hades's execution architecture.
 
-== Existing System
+== Existing System <existing_system>
 // #TODO[
 //   This section is only required if the proposed system (i.e. the system that you develop in the thesis) shall replace an existing system.
 // ]
@@ -32,7 +32,7 @@ The HadesScheduler retrieves jobs from these priority-ordered queues using a pri
 While this architecture enables lightweight processing of build jobs, several limitations remain. The system does not have a unified representation of build job lifecycles, provides limited visibility into the execution process, lacks advanced workload distribution strategies, and does not offer a standardized method for assessing performance. These limitations highlight the need for the improvements and requirements outlined in the following sections.
 
 
-== Proposed System
+== Proposed System <proposed_system>
 // #TODO[
 //   If you leave out the section “Existing system”, you can rename this section into “Requirements”.
 // ]
@@ -40,7 +40,7 @@ While this architecture enables lightweight processing of build jobs, several li
 The proposed system introduces new capabilities aimed at improving the management, execution, and evaluation of build jobs within Hades. This section summarizes the functional requirements derived from the system objectives and the limitations identified in the existing architecture. The requirements are grouped into two categories: core system capabilities, which describe the essential functions needed to manage and operate build jobs in a structured and scalable manner; and benchmarking capabilities, which outline the system's ability to generate workloads, measure performance, and support comparative evaluation across different configurations. These functional requirements collectively define the scope of the proposed enhancements and guide the system's architectural design.
 
 
-=== Functional Requirements
+=== Functional Requirements <functional_requirements>
 // #TODO[
 //   List and describe all functional requirements of your system. Also mention requirements that you were not able to realize. The short title shall be in the form “verb objective”
 
@@ -87,7 +87,7 @@ As a developer, I want to collect end-to-end performance metrics for submitted b
 
 As a developer, I want to obtain structured benchmark reports so that I can interpret performance results efficiently and identify potential bottlenecks in the system. To support this goal, the CI-Benchmarker shall aggregate the collected performance data and generate reports that summarize key metrics, such as latency distributions, throughput over time, and comparative outcomes across different system configurations. These reports should be suitable for manual inspection by developers and system administrators, providing actionable insights that guide further optimization and architectural evaluation.
 
-=== Quality Attributes
+=== Quality Attributes <quality_attributes>
 // #TODO[
 //   List and describe all quality attributes of your system. All your quality attributes shall fall into the URPS categories mentioned in @bruegge2004object. Also mention requirements that you were not able to realize.
 
@@ -154,7 +154,7 @@ The benchmarking subsystem shall ensure that identical workload specifications y
 The benchmarking subsystem shall compute and report performance metrics quickly and with sufficient accuracy to support reliable comparison across different Hades configurations and execution modes.
 
 
-=== Constraints
+=== Constraints <constraints>
 
 // #TODO[
 //   List and describe all pseudo requirements of your system. Also mention requirements that you were not able to realize.
@@ -183,7 +183,7 @@ The system must continue to accept build requests from existing trigger sources,
 
 Deployment and configuration of the system components must follow the centralized operational practices of the hosting organization. This constraint requires that installation, updates, and configuration changes can be performed using the existing operational workflows.
 
-== System Models
+== System Models <system_models>
 // #TODO[
 //   This section includes important system models for the requirements.
 // ]

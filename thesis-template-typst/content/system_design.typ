@@ -91,21 +91,21 @@ The client-side components of the system are hosted on a dedicated Ubuntu Virtua
 
 The core logic of the HadesCI system is deployed entirely within a Kubernetes Cluster, utilizing the platform's native capabilities for container orchestration. This environment hosts the critical server-side components, including the Gateway, the Queue, the Scheduler, and the Kubernetes Operator. Within this cluster, Hades utilizes NATS Jetstream to implement the Queue component, a high-performance messaging system. Communication between the Gateway to the Queue and the Queue to the Scheduler is conducted over raw TCP connections to minimize latency. Furthermore, the Scheduler uses the Kubernetes API to interact with the  Kubernetes Operator.
 
-== Persistent Data Management
-// #TODO[
-//   Optional section that describes how data is saved over the lifetime of the system and which data. Usually this is either done by saving data in structured files or in databases. If this is applicable for the thesis, describe the approach for persisting data here and show a UML class diagram how the entity objects are mapped to persistent storage. It contains a rationale of the selected storage scheme, file system or database, a description of the selected database and database administration issues.
-// ]
+// == Persistent Data Management
+// // #TODO[
+// //   Optional section that describes how data is saved over the lifetime of the system and which data. Usually this is either done by saving data in structured files or in databases. If this is applicable for the thesis, describe the approach for persisting data here and show a UML class diagram how the entity objects are mapped to persistent storage. It contains a rationale of the selected storage scheme, file system or database, a description of the selected database and database administration issues.
+// // ]
 
-Given the architectural focus on concurrency execution, this work designs the system to be largely stateless and not persistence-heavy. The data management strategy is therefore minimalistic, utilizing lightweight storage mechanisms tailored to the specific needs of the CI engine and the benchmarking tool, respectively.
+// Given the architectural focus on concurrency execution, this work designs the system to be largely stateless and not persistence-heavy. The data management strategy is therefore minimalistic, utilizing lightweight storage mechanisms tailored to the specific needs of the CI engine and the benchmarking tool, respectively.
 
-The CI-Benchmarker requires a structured storage mechanism to track benchmark histories and analytical results, yet it remains a lightweight subsystem. Consequently, this thesis selects SQLite as the database engine due to its serverless, zero-configuration nature, which integrates seamlessly with the standalone benchmarking environment. The data schema design prioritizes simplicity, comprising two primary tables that correlate job scheduling with execution performance. The `scheduled_job` table serves as the registry for task definitions. It stores the unique job ID, the timestamp of triggering, and the target executor (e.g., Hades or Jenkins). It also stores an optional commit hash to track specific benchmarking with code versions. The `job_results` table captures the temporal metrics necessary for performance analysis. It records the pipeline execution information by storing the `start_time` and `end_time`, keyed by the job's unique ID. This relational structure allows the Metrics Service to efficiently join scheduling data with execution timestamps to calculate key performance indicators.
+// The CI-Benchmarker requires a structured storage mechanism to track benchmark histories and analytical results, yet it remains a lightweight subsystem. Consequently, this thesis selects SQLite as the database engine due to its serverless, zero-configuration nature, which integrates seamlessly with the standalone benchmarking environment. The data schema design prioritizes simplicity, comprising two primary tables that correlate job scheduling with execution performance. The `scheduled_job` table serves as the registry for task definitions. It stores the unique job ID, the timestamp of triggering, and the target executor (e.g., Hades or Jenkins). It also stores an optional commit hash to track specific benchmarking with code versions. The `job_results` table captures the temporal metrics necessary for performance analysis. It records the pipeline execution information by storing the `start_time` and `end_time`, keyed by the job's unique ID. This relational structure allows the Metrics Service to efficiently join scheduling data with execution timestamps to calculate key performance indicators.
 
-Designed as a stateless architecture, HadesCI delegates persistence to the NATS JetStream middleware rather than a centralized relational database. The current implementation utilizes JetStream's in-memory storage to prioritize throughput and minimize latency, aligning with the system's performance goals. However, the architecture retains the flexibility to switch to file-based storage, allowing for durable message persistence in the future.
+// Designed as a stateless architecture, HadesCI delegates persistence to the NATS JetStream middleware rather than a centralized relational database. The current implementation utilizes JetStream's in-memory storage to prioritize throughput and minimize latency, aligning with the system's performance goals. However, the architecture retains the flexibility to switch to file-based storage, allowing for durable message persistence in the future.
 
 == Access Control
-#TODO[
-  Optional section describing the access control and security issues based on the quality attributes and constraints. It also de- scribes the implementation of the access matrix based on capabilities or access control lists, the selection of authentication mechanisms and the use of en- cryption algorithms.
-]
+// #TODO[
+//   Optional section describing the access control and security issues based on the quality attributes and constraints. It also de- scribes the implementation of the access matrix based on capabilities or access control lists, the selection of authentication mechanisms and the use of en- cryption algorithms.
+// ]
 
 #figure(
   stack(
@@ -150,12 +150,14 @@ Designed as a stateless architecture, HadesCI delegates persistence to the NATS 
   caption: [access matrix],
 )
 
-== Global Software Control
-#TODO[
-  Optional section describing the control flow of the system, in particular, whether a monolithic, event-driven control flow or concurrent processes have been selected, how requests are initiated and specific synchronization issues
-]
+== Kubernetes Native Design
 
-== Boundry Conditions
-#TODO[
-  Optional section describing the use cases how to start up the separate components of the system, how to shut them down, and what to do if a component or the system fails.
-]
+// == Global Software Control
+// #TODO[
+//   Optional section describing the control flow of the system, in particular, whether a monolithic, event-driven control flow or concurrent processes have been selected, how requests are initiated and specific synchronization issues
+// ]
+
+// == Boundry Conditions
+// #TODO[
+//   Optional section describing the use cases how to start up the separate components of the system, how to shut them down, and what to do if a component or the system fails.
+// ]

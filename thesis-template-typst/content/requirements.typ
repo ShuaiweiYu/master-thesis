@@ -287,15 +287,15 @@ Following the queuing phase, the workflow reaches a decision node. This conditio
 The workflow continues on the Hades side until the pipeline concludes with the Finish build & Report build result action. This completion event triggers a final notification to the CI-Benchmarker, prompting the Log the ID and build end time action. By correlating this timestamp with the start time, the Benchmarker computes the total execution duration. Finally, the process terminates when the developer generates the metrics report, where the system aggregates all recorded timestamps and status codes to synthesize the final performance analysis.
 
 
-=== User Interface
-// #TODO[
-//   Show mockups of the user interface of the software you develop and their connections / transitions. You can also create a storyboard. *Important:* Describe the mockups and their rationale in the text.
-// ]
+// === User Interface
+// // #TODO[
+// //   Show mockups of the user interface of the software you develop and their connections / transitions. You can also create a storyboard. *Important:* Describe the mockups and their rationale in the text.
+// // ]
 
-As a specialized infrastructure platform, Hades and the CI-Benchmarker adopt a Headless Architecture, exposing functionality strictly via RESTful APIs to prioritize automation over manual visual control. Consequently, Hades facilitates user interaction through professional API clients like Postman or Bruno. As illustrated in Figure @ui_bruno, developers configure benchmarks by targeting specific endpoints, where the corresponding Hades System is deployed, and passing count and commit_hash to define the benchmark context.
+// As a specialized infrastructure platform, Hades and the CI-Benchmarker adopt a Headless Architecture, exposing functionality strictly via RESTful APIs to prioritize automation over manual visual control. Consequently, Hades facilitates user interaction through professional API clients like Postman or Bruno. As illustrated in Figure @ui_bruno, developers configure benchmarks by targeting specific endpoints, where the corresponding Hades System is deployed, and passing count and commit_hash to define the benchmark context.
 
-#figure( image("../figures/bruno-ci-benchmarker.png"), caption: [The REST API interface for triggering a benchmark via Bruno. The request configures the target host, workload count, and specific commit hash.], ) <ui_bruno>
+// #figure( image("../figures/bruno-ci-benchmarker.png"), caption: [The REST API interface for triggering a benchmark via Bruno. The request configures the target host, workload count, and specific commit hash.], ) <ui_bruno>
 
-To further streamline usability, we implemented a custom GitHub Action that embeds this interface directly into version control workflows as shown in @ui_github_actions. This integration enables developers to trigger benchmarks through a form-based UI within GitHub, automatically extracting the current commit hash to construct the parameters. The API-centric design ensures the system remains lightweight, strictly decouples the interface from the execution logic, and offers further possibilities for extension.
+// To further streamline usability, we implemented a custom GitHub Action that embeds this interface directly into version control workflows as shown in @ui_github_actions. This integration enables developers to trigger benchmarks through a form-based UI within GitHub, automatically extracting the current commit hash to construct the parameters. The API-centric design ensures the system remains lightweight, strictly decouples the interface from the execution logic, and offers further possibilities for extension.
 
-#figure( image("../figures/github-actions-ci-benchmarkerk.png"), caption: [The REST API interface for triggering a benchmark via Github action. The request only configures workload count, with the target host, and specific commit hash is automatically configured.], ) <ui_github_actions>
+// #figure( image("../figures/github-actions-ci-benchmarkerk.png"), caption: [The REST API interface for triggering a benchmark via Github action. The request only configures workload count, with the target host, and specific commit hash is automatically configured.], ) <ui_github_actions>

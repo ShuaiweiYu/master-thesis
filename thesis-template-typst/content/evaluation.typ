@@ -79,16 +79,16 @@ To ensure a fair comparison and isolate performance characteristics, the hardwar
     table.hline(stroke: 1.5pt),
     
     table.header(
-      [*Environment*], [*vCPU*], [*RAM*], [*Deloyment Target*]
+      [*Environment*], [*vCPU*], [*RAM*], [*Topology*]
     ),
     
     table.hline(stroke: 0.5pt),
     
-    [CI-Benchmarker], [4], [4 GB], [Ubuntu 24.04 LTS],
-    [Hades Docker], [4], [4 GB], [Ubuntu 24.04 LTS],
-    [Jenkins], [4], [4 GB], [Ubuntu 24.04 LTS],
-    [K3s Cluster], [8], [16 GB], [Ubuntu 24.04 LTS],
-    [Rancher Cluster], [100], [313 GB], [Ubuntu 24.04 LTS],
+    [CI-Benchmarker], [4], [4 GB], [Single VM],
+    [Hades Docker], [4], [4 GB], [Single VM],
+    [Jenkins], [4], [4 GB], [Single VM],
+    [K3s Cluster], [8], [16 GB], [Single Node],
+    [Rancher Cluster], [100], [313 GB], [13 Nodes],
     
     table.hline(stroke: 1.5pt),
   ),
@@ -96,7 +96,7 @@ To ensure a fair comparison and isolate performance characteristics, the hardwar
 ) <setup>
 
 // todo: put the payload in the appendix
-To simulate a realistic Continuous Integration workload typical of student assignments, we defined a standardized Hades payload. This job consists of a four-stage pipeline. The structure is designed not only to perform the build task but also to capture precise timestamps for latency calculation.
+To simulate a realistic Continuous Integration workload typical of student assignments, we defined a standardized Hades payload. This job consists of a four-stage pipeline as indicated in #link(<build_script>)[Build Script]. The structure is designed not only to perform the build task but also to capture precise timestamps for latency calculation.
 
 - * Step 1: Report Starting Time *
   - * Action *: Triggers a lightweight reporter container (hades-reporter).
@@ -164,17 +164,13 @@ To evaluate system scalability, a burst workload of 100 jobs was submitted. The 
       stroke: none,
       table.hline(stroke: 1.5pt),
       
-      // 修正点：所有的表头行都在同一个 table.header 中
       table.header(
-        // 第一行
         table.cell(rowspan: 2, align: left + horizon)[*Operation Mode*],
         table.cell(colspan: 3)[*Queue Latency (s)*],
         table.cell(colspan: 3)[*Build Time (s)*],
         
-        // 表头中间的细线，也要放在这里面
         table.hline(stroke: 0.5pt),
         
-        // 第二行
         [*Avg*], [*Median*], [*Max*],
         [*Avg*], [*Median*], [*Max*]
       ),
@@ -207,13 +203,80 @@ Transitioning from the standalone Hades Docker environment to a Kubernetes clust
 
 Finally, the nearly identical performance of the lightweight K3s cluster and the massive Rancher cluster under baseline conditions suggests that single-job build latency is relatively insensitive to resource surplus. Despite the vast difference in available vCPUs (8 vs. 100), the total latency remained comparable. This suggests that for sequential workloads, the performance bottleneck lies in the software stack's initialization speed rather than raw computational power. Consequently, resource-constrained environments can provide a user experience identical to that of production-grade clusters when handling individual submissions.
 
+=== Findings from Stress Tests
+
+The stress test reveals the physical limitations inherent in the architecture of standalone execution environments. Under a burst load of 100 jobs, both the Hades Docker and Jenkins executors experienced a rapid, cumulative increase in queue latency. This phenomenon signifies a throughput bottleneck: the rate at which jobs are submitted exceeds the system's capacity to process them. As the limited execution slots become fully occupied, incoming submissions are forced into a holding phase, causing the wait time to stack up linearly for each subsequent job. Specifically, Hades Docker recorded an average wait time of 752 seconds, while Jenkins recorded an average wait time of 1,364 seconds.
+
+Despite this severe congestion, the Build Time remained remarkably stable, averaging 13 seconds, virtually identical to the low-load baseline. This consistency indicates that the serialization strategy successfully isolates execution, ensuring that the heavy load of queued jobs does not degrade the performance of the currently running job. However, this stability is achieved at the cost of massive backpressure. While the system continues to function correctly and accept new submissions, the linear accumulation of wait time results in significant feedback latency, severely delaying the delivery of build results.
+
+In contrast, transitioning to Kubernetes-based modes demonstrated the efficacy of the Operator Pattern in alleviating build job congestion. By leveraging Kubernetes Custom Resources (CRDs) to manage job lifecycles, the system gains the ability to dynamically schedule concurrent workloads, outperforming the standalone baselines in terms of queue throughput. The Rancher cluster reduced the average queue latency to 133 seconds, which is approximately 5.6 times faster than the standalone Docker mode. At the same time, the K3s cluster achieved a duration of 305 seconds. This validates that the Kubernetes Operator Pattern, which parallelizes execution across available pods rather than a single sequential queue, eases the burst workloads and improves system throughput.
+
+However, a critical divergence emerges when analyzing the stability of Build Time, revealing the impact of resource saturation. The production-grade Rancher environment achieved near-linear scaling: despite the high concurrency, it maintained an average build time of 17 seconds, which is virtually identical to its baseline performance (15.6s). This confirms that with sufficient hardware resources, the system can handle high concurrency without degrading individual job performance. Conversely, the resource-constrained K3s environment, while successfully reducing queue wait times compared to Docker, suffered a degradation in execution speed. The average build time increased to 51 seconds. This phenomenon indicates that while the scheduler successfully distributed the concurrency, the limited hardware resources reached saturation, causing individual jobs to compete for processor cycles and prolonging the compilation process.
 
 == Discussion
-#TODO[
-  Discuss the findings in more detail and also review possible disadvantages that you found
-]
+// #TODO[
+//   Discuss the findings in more detail and also review possible disadvantages that you found
+// ]
+
+=== Divergence in Scheduling Paradigms and Execution Models
+
+The quantitative performance gap observed in the baseline benchmarks reflects a divergence in design philosophy between traditional CI platforms and modern, container-native build systems. The significant disparity in queue latency: 1.4 seconds for Hades against 14.2 seconds for Jenkins, is primarily an artifact of the scheduling logic rather than computational throughput. Jenkins operates on a strategy of a Quiet Period. This mechanism is predicated on the observation that code submissions often occur in bursts, where minor corrections rapidly follow an initial commit #footnote[https://www.jenkins.io/blog/2010/08/11/quiet-period-feature/]. To mitigate the resource consumption of redundant builds, Jenkins enforces a mandatory buffer period to await a state of repository quiescence, thereby coalescing a series of rapid commits into a single build task.
+
+While this strategy is theoretically sound for monolithic, high-cost build pipelines where execution time is significant, it introduces a domain mismatch for lightweight, high-frequency workflows. Hades operates on a micro-task architecture, where execution environments are ephemeral and build durations are minimal. By treating every submission as an immediate trigger, Hades prioritizes feedback granularity and real-time responsiveness over the resource conservation strategies typical of legacy CI/CD designs.
+
+Beyond scheduling, the variation in build times (13.6s vs. 20.6s) illustrates the initialization cost inherent in different execution models. The Jenkins Master-Agent architecture requires maintaining persistent connections, instantiating the JVM, and synchronizing the workspace before pipeline execution can commence. This overhead is amortized effectively in long-duration industrial builds but becomes a dominant factor in short-lived tasks. In contrast, Hades leverages a container-native execution model, interacting directly with the container runtime API to provision isolated environments on demand. By stripping away the middleware layers associated with agent management, Hades reduces initialization overhead, demonstrating that direct container orchestration is the superior approach for workloads that require high throughput and low latency.
+
+=== The Trade-off between Orchestration Overhead and Scalability <resource_saturation>
+
+The transition from a Docker environment to a Kubernetes-based architecture presents a fundamental trade-off between minimizing latency and maximizing throughput. As observed in the baseline benchmarks, the Kubernetes operation modes incur a fixed orchestration overhead, resulting in a build time increase of approximately 2 seconds compared to the HadesCI Docker mode. Unlike Docker mode, which executes via direct socket interactions, the Kubernetes Operator mode relies on the asynchronous reconciliation loop, which involves watching Custom Resource Definitions, updating state, and propagating events via API Server round-trips. However, the stress tests reveal the critical necessity of this overhead. In the standalone Docker scenario, the absence of such a scheduling layer resulted in severe Head-of-line Blocking, causing wait times to scale linearly with the submission volume. Conversely, the Kubernetes operator converts this constant overhead into a capability for horizontal scaling, ensuring that the system can parallelize execution and decouple queue latency from load.
+
+While horizontal scaling provides the mechanism for high throughput, the stress test results highlight the physical limitations imposed by resource oversubscription. A critical finding is the divergence in Build Time stability under different concurrency configurations. In the initial test, where the concurrency limit (10) exceeded the available physical cores (8), the K3s environment experienced a threefold increase in build time (from 16 seconds to 51 seconds). This degradation is a direct consequence of CPU resource saturation and the resulting context switching overhead. With the system in an overcommitted state, the operating system's scheduler is forced to aggressively timeslice limited processor cycles among competing processes, causing individual jobs to languish in a "runnable" but waiting state. This effect leads to cache thrashing and increased kernel overhead, effectively stalling execution.
+
+#figure(
+  table(
+    columns: (auto, 1fr, 1fr),
+    align: (left, center, center),
+    stroke: none,
+    table.hline(stroke: 1.5pt),
+    table.header(
+      [*Metric*],
+      [*Over-provisioned Scenario* \ (10 Concurrent / No Limits)],
+      [*Resource-Bounded Scenario* \ (6 Concurrent / Limits Applied)]
+    ),
+    table.hline(stroke: 0.5pt),
+
+    [Baseline (Single Job)], [16.2 s], [29.4 s],
+    [Stress Test Average],   [51.0 s], [35.0 s],
+    
+    table.hline(stroke: 0.5pt),
+    
+    [Max Build Time],        [68.0 s], [40.0 s],
+    [Min Build Time],        [27.0 s], [33.0 s],
+
+    table.hline(stroke: 1.5pt),
+  ),
+  caption: [Impact of concurrency limits on build time stability in an 8-CPU environment.],
+) <tab:resource-optimization>
+
+A follow-up control experiment empirically validates this hypothesis. When we reduce the concurrency limit to 6, which is strictly less than eight cores of the host VM. Furthermore, we explicitly limited CPU and memory usage by specifying the CPULimit to 1 CPU core and the MemoryLimit to 512MB for each container. As @tab:resource-optimization shows, this setup restored the performance stability. Under these resource-bounded conditions, the stress test yielded an average build time of 35 seconds, which is closely aligned with the constrained baseline of 29.4 seconds. The reduction in performance variability confirms that the earlier degradation was introduced by resource contention rather than architectural inefficiency. This demonstrates that for resource-constrained clusters, implementing strict Resource Quotas and ensuring concurrency limits remain below physical core counts are prerequisites for maintaining predictable execution latency.
+
+=== Identifying Performance Bottlenecks in the Hades Operator
+
+The stress tests illustrate the phenomenon of bottleneck migration from software to hardware. While the standalone HadesCI Docker mode was constrained by an architectural limitation in scheduling parallel work, transitioning to Kubernetes removed this software barrier, only to expose the physical limitations of the underlying hardware. As evidenced by the degradation in the over-provisioned K3s cluster, when the concurrency limit exceeds physical core availability, the bottleneck shifts to the CPU scheduler. The resulting context-switching overhead demonstrates that without the strict resource quotas, architectural scalability becomes ineffective due to physical saturation.
+
+Above this physical layer lies the intrinsic architectural overhead of the distributed control plane. The benchmark data consistently demonstrates a fixed latency floor, approximately 2 to 3 seconds, for Kubernetes modes compared to the direct socket interaction of the Docker baseline. This overhead is inherent to the orchestration model, where the API Server, Scheduler, and Kubelet must coordinate asynchronously to launch a Pod. While eliminating this control plane latency is impossible, we can mitigate the implementation by optimizing the operator logic to reduce overhead.
+
+Finally, specific implementation choices within the Hades Operator introduce necessary but measurable delays. First, to prevent the CPU resource saturation identified in @resource_saturation, the operator enforces a strict concurrency limit. Before every admission, the operator iterates through all running jobs, serializing entries to ensure that the number of active builds never exceeds the physical capacity. While this counting process adds latency, it is the primary mechanism that prevents the system from degrading into an over-committed state where build times triple. Second, creating a build requires a chain of separate actions: checking existence, creating the Job, sending logs, and updating the status. The operator performs these sequentially, waiting for the API server to confirm each step before proceeding to the next, rather than executing them in parallel. Third, during high traffic, simultaneous status updates often conflict. To prevent data corruption, the operator implements a retry mechanism that waits and retries failed updates. While these patterns introduce latency, they are deliberate design choices that ensure system stability and data consistency.
 
 == Limitations
-#TODO[
-  Describe limitations and threats to validity of your evaluation, e.g. reliability, generalizability, selection bias, researcher bias
-]
+// #TODO[
+//   Describe limitations and threats to validity of your evaluation, e.g. reliability, generalizability, selection bias, researcher bias
+// ]
+
+While this evaluation demonstrates the architectural efficiency of Hades, we acknowledge specific constraints in our experimental design that affect the generalizability and precision of the results.
+
+The primary limitation lies in the homogeneity of the workload versus the variance found in real-world scenarios. Our stress tests utilized a uniform set of identical submission artifacts by repeating the same Maven compilation task 100 times. However, real-world continuous integration environments show high heterogeneity and complexity. A production pipeline typically processes a chaotic mix of tasks ranging from CPU-intensive compilations to I/O-heavy dependency downloads and integration tests. Consequently, the resource contention patterns observed in our benchmarking scenario may differ from those in a mixed-workload environment.
+
+Furthermore, the methodology for recording execution metrics introduces a slight observer effect regarding measurement precision. The system relies on an instrumentation mechanism where Hades must first pull a specific parser image and issue an HTTP callback to the CI-Benchmarker to mark the exact start of build execution. Although this image is lightweight, the latency incurred by the container pull and the network round-trip for the HTTP request is inseparably included in the total reported build time. Therefore, the absolute build durations presented in the benchmarks likely contain a minor variable overhead.
+
+Finally, the experimental scope was confined to a single Kubernetes namespace. This configuration simulates a single-tenant environment, effectively minimizing the control plane overhead associated with multi-tenancy. In a production scenario serving multiple independent teams, the operator should simultaneously reconcile events across numerous isolated namespaces. This pattern would impose a higher load on the Kubernetes API server due to the increased volume of watch events and permission checks. Thus, our results should be interpreted as a baseline for physical scalability within a unified context.

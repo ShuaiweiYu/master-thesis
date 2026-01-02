@@ -1,7 +1,7 @@
-Note:
-  1. *paragraph:* What is the motivation of your thesis? Why is it interesting from a scientific point of view? Which main problem do you like to solve?
-  2. *paragraph:* What is the purpose of the document? What is the main content, the main contribution?
-  3. *paragraph:* What is your methodology? How do you proceed?
+// Note:
+//   1. *paragraph:* What is the motivation of your thesis? Why is it interesting from a scientific point of view? Which main problem do you like to solve?
+//   2. *paragraph:* What is the purpose of the document? What is the main content, the main contribution?
+//   3. *paragraph:* What is your methodology? How do you proceed?
 
 Continuous Integration and Continuous Delivery are central to reliable and efficient software development across many domains. Hades is a scalable build-execution system designed to support a variety of use cases—ranging from educational exercise platforms to general CI workloads—yet its current deployment outside target Kubernetes clusters prevents it from fully leveraging Kubernetes-native features. This deployment pattern limits scalability and observability, increases manual maintenance effort, and constrains fine-grained access control and load balancing.
 
